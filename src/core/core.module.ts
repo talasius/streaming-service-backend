@@ -21,6 +21,8 @@ import { LivekitModule } from '../modules/lib/livekit/livekit.module';
 import { getLiveKitConfig } from './config/livekit.config';
 import { IngressModule } from '../modules/stream/ingress/ingress.module';
 import { WebhookModule } from '../modules/webhook/webhook.module';
+import { CategoryModule } from '../modules/category/category.module';
+import { ChatModule } from '../modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { WebhookModule } from '../modules/webhook/webhook.module';
     TotpModule,
     DeactivateModule,
     StreamModule,
+    CategoryModule,
+    ChatModule,
     IngressModule,
     WebhookModule,
   ],

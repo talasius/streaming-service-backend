@@ -7,6 +7,23 @@ type AuthModel {
   user: UserModel
 }
 
+type CategoryModel {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  slug: String!
+  streams: [StreamModel!]!
+  thumbnailUrl: String!
+  title: String!
+  updatedAt: DateTime!
+}
+
+input ChangeChatSettingsInput {
+  isChatEnabled: Boolean!
+  isChatFollowersOnly: Boolean!
+  isChatPremiumFollowersOnly: Boolean!
+}
+
 input ChangeEmailInput {
   email: String!
 }
@@ -25,6 +42,17 @@ input ChangeProfileInfoInput {
 input ChangeStreamInfoInput {
   categoryId: String!
   title: String!
+}
+
+type ChatMessageModel {
+  createdAt: String!
+  id: ID!
+  stream: StreamModel!
+  streamId: String!
+  text: String!
+  updatedAt: String!
+  user: UserModel!
+  userId: String!
 }
 
 input CreateUserInput {
@@ -89,6 +117,7 @@ input LoginInput {
 }
 
 type Mutation {
+  changeChatSettings(data: ChangeChatSettingsInput!): Boolean!
   changeEmail(data: ChangeEmailInput!): Boolean!
   changePassword(data: ChangePasswordInput!): Boolean!
   changeProfileAvatar(avatar: Upload!): Boolean!
@@ -111,6 +140,7 @@ type Mutation {
   removeStreamThumbnail: Boolean!
   reorderSocialLinks(list: [SocialLinkOrderInput!]!): Boolean!
   resetPassword(data: ResetPasswordInput!): Boolean!
+  sendChatMessage(data: SendMessageInput!): ChatMessageModel!
   setNewPassword(data: NewPasswordInput!): Boolean!
   updateSocialLink(data: SocialLinkInput!, id: String!): Boolean!
   verifyAccount(data: VerificationInput!): UserModel!
@@ -123,9 +153,13 @@ input NewPasswordInput {
 }
 
 type Query {
+  findAllCategories: [CategoryModel!]!
   findAllStreams(filters: FiltersInput!): [StreamModel!]!
+  findByStream(streamId: String!): [ChatMessageModel!]!
+  findCategoryBySlug(slug: String!): CategoryModel!
   findCurrentSession: SessionModel!
   findProfile: UserModel!
+  findRandomCategories: [CategoryModel!]!
   findRandomStreams: [StreamModel!]!
   findSessionsByUser: [SessionModel!]!
   findSocialLinks: [SocialLinkModel!]!
@@ -134,6 +168,11 @@ type Query {
 
 input ResetPasswordInput {
   email: String!
+}
+
+input SendMessageInput {
+  streamId: String!
+  text: String!
 }
 
 type SessionMetadataModel {
@@ -170,9 +209,15 @@ input SocialLinkOrderInput {
 }
 
 type StreamModel {
+  category: CategoryModel!
+  categoryId: String!
+  chatMessages: [ChatMessageModel!]!
   createdAt: String!
   id: ID!
   ingressId: String
+  isChatEnabled: Boolean!
+  isChatFollowersOnly: Boolean!
+  isChatPremiumFollowersOnly: Boolean!
   isLive: Boolean!
   serverUrl: String
   streamKey: String
@@ -181,6 +226,10 @@ type StreamModel {
   updatedAt: String!
   user: UserModel!
   userId: String!
+}
+
+type Subscription {
+  chatMessageAdded(streamId: String!): ChatMessageModel!
 }
 
 """The `Upload` scalar type represents a file upload."""
