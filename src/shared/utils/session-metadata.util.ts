@@ -12,7 +12,7 @@ export function getSessionMetadata(
   userAgent: string,
 ): SessionMetadata {
   const ip = IS_DEV_ENV
-    ? '31.162.23.160'
+    ? '89.20.2.170'
     : Array.isArray(req.headers['cf-connecting-ip'])
       ? req.headers['cf-connecting-ip'][0]
       : req.headers['cf-connecting-ip'] ||

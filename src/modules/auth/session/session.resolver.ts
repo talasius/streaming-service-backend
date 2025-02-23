@@ -1,11 +1,11 @@
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { SessionService } from './session.service';
-import { UserModel } from '../account/models/user.model';
-import type { GqlContext } from '@/src/shared/types/gql-context.types';
-import { LoginInput } from './inputs/login.input';
-import { UserAgent } from '@/src/shared/decorators/user-agent.decorator';
 import { Authorization } from '@/src/shared/decorators/auth.decorator';
+import { UserAgent } from '@/src/shared/decorators/user-agent.decorator';
+import type { GqlContext } from '@/src/shared/types/gql-context.types';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { AuthModel } from '../account/models/auth.model';
+import { LoginInput } from './inputs/login.input';
 import { SessionModel } from './models/session.model';
+import { SessionService } from './session.service';
 
 @Resolver('Session')
 export class SessionResolver {
@@ -21,9 +21,9 @@ export class SessionResolver {
   @Query(() => SessionModel, { name: 'findCurrentSession' })
   public async findCurrentSession(@Context() { req }: GqlContext) {
     return this.sessionService.findCurrent(req);
-  }
+  } 
 
-  @Mutation(() => UserModel, { name: 'loginUser' })
+  @Mutation(() => AuthModel, { name: 'loginUser' })
   public async login(
     @Context() { req }: GqlContext,
     @Args('data') input: LoginInput,

@@ -2,6 +2,7 @@ import { PrismaService } from '@/src/core/prisma/prisma.service';
 import { RedisService } from '@/src/core/redis/redis.service';
 import { getSessionMetadata } from '@/src/shared/utils/session-metadata.util';
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -12,6 +13,9 @@ import { ConfigService } from '@nestjs/config';
 import { verify } from 'argon2';
 import { Request } from 'express';
 import type { LoginInput } from './inputs/login.input';
+import { destroySession, saveSession } from '@/src/shared/utils/session.util';
+import { VerificationService } from '../verification/verification.service';
+import { TOTP } from 'otpauth';
 
 @Injectable()
 export class SessionService {
@@ -19,6 +23,7 @@ export class SessionService {
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
     private readonly configService: ConfigService,
+    private readonly verificationService: VerificationService,
   ) {}
 
   public async findByUser(req: Request) {
@@ -33,8 +38,10 @@ export class SessionService {
 
     for (const key of keys) {
       const sessionData = await this.redis.get(key);
+
       if (sessionData) {
         const session = JSON.parse(sessionData);
+        
         if (session.userId === userId) {
           userSessions.push({
             ...session,
@@ -65,7 +72,7 @@ export class SessionService {
   }
 
   public async login(req: Request, input: LoginInput, userAgent: string) {
-    const { login, password } = input;
+    const { login, password, pin } = input;
 
     const user = await this.prisma.user.findFirst({
       where: {
@@ -81,42 +88,39 @@ export class SessionService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    const sessionMetadata = getSessionMetadata(req, userAgent);
+    if (!user.isEmailVerified) {
+      await this.verificationService.sendVerificationToken(user);
 
-    return new Promise((resolve, reject) => {
-      req.session.createdAt = new Date();
-      req.session.userId = user.id;
-      req.session.metadata = sessionMetadata;
+      throw new BadRequestException('Email is not verified. Check your email.');
+    }
 
-      console.log('Current session:', req.session);
-
-      req.session.save((err) => {
-        if (err) {
-          return reject(
-            new InternalServerErrorException(
-              'Unexpected error occured while saving session',
-            ),
-          );
-        }
-        resolve(user);
+    if (user.isTotpEnabled) {
+      if (!pin) {
+        return {
+          message: 'Pin is required to login',
+        };
+      }
+      const totp = new TOTP({
+        issuer: 'TeaStream',
+        label: `${user.email}`,
+        algorithm: 'SHA1',
+        digits: 6,
+        secret: user.totpSecret,
       });
-    });
+
+      const delta = totp.validate({ token: pin });
+
+      if (delta === null) {
+        throw new BadRequestException('Invalid pin');
+      }
+    }
+
+    const sessionMetadata = getSessionMetadata(req, userAgent);
+    return saveSession(req, user, sessionMetadata);
   }
 
   public async logout(req: Request) {
-    return new Promise((resolve, reject) => {
-      req.session.destroy((err) => {
-        if (err) {
-          return reject(
-            new InternalServerErrorException('Cannot terminate session'),
-          );
-        }
-        req.res.clearCookie(
-          this.configService.getOrThrow<string>('SESSION_NAME'),
-        );
-        resolve(true);
-      });
-    });
+    return destroySession(req, this.configService);
   }
 
   public async clearSession(req: Request) {
