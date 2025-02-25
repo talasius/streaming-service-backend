@@ -8856,17 +8856,17 @@ export namespace Prisma {
 
   export type ChatMessageWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    userId?: string
     AND?: ChatMessageWhereInput | ChatMessageWhereInput[]
     OR?: ChatMessageWhereInput[]
     NOT?: ChatMessageWhereInput | ChatMessageWhereInput[]
     text?: StringFilter<"ChatMessage"> | string
+    userId?: StringFilter<"ChatMessage"> | string
     streamId?: StringFilter<"ChatMessage"> | string
     createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
     updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     stream?: XOR<StreamScalarRelationFilter, StreamWhereInput>
-  }, "id" | "userId">
+  }, "id">
 
   export type ChatMessageOrderByWithAggregationInput = {
     id?: SortOrder

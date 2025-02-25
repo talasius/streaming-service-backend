@@ -13,5 +13,8 @@ export function getGraphQLConfig(
     sortSchema: true,
     context: ({ req, res }) => ({ req, res }),
     installSubscriptionHandlers: true,
+    // subscriptions: {
+    //   'graphql-ws': true, 
+    // },
   };
 }

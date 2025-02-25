@@ -37,6 +37,8 @@ export class ChatService {
       },
     });
 
+    
+
     if (!stream) {
       throw new NotFoundException('Stream not found');
     }
@@ -44,7 +46,7 @@ export class ChatService {
     if (!stream.isLive) {
       throw new BadRequestException('Stream is not live');
     }
-
+    
     const message = await this.prisma.chatMessage.create({
       data: {
         text,
@@ -58,6 +60,9 @@ export class ChatService {
             id: streamId,
           },
         },
+      },
+      include: {
+        stream: true,
       },
     });
 
