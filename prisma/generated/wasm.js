@@ -152,6 +152,14 @@ exports.Prisma.StreamScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FollowScalarFieldEnum = {
+  id: 'id',
+  followerId: 'followerId',
+  followingId: 'followingId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ChatMessageScalarFieldEnum = {
   id: 'id',
   text: 'text',
@@ -214,6 +222,7 @@ exports.TokenType = exports.$Enums.TokenType = {
 exports.Prisma.ModelName = {
   User: 'User',
   Stream: 'Stream',
+  Follow: 'Follow',
   ChatMessage: 'ChatMessage',
   Category: 'Category',
   SocialLink: 'SocialLink',
