@@ -29,9 +29,12 @@ model User {
   isDeactivated Boolean   @default(false) @map("is_deactivated")
   deactivatedAt DateTime? @map("deactivated_at")
 
-  token       Token[]
-  socialLinks SocialLink[]
-  stream      Stream?
+  token        Token[]
+  socialLinks  SocialLink[]
+  stream       Stream?
+  followers    Follow[]      @relation(name: "followers")
+  following    Follow[]      @relation(name: "following")
+  chatMessages ChatMessage[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -51,13 +54,73 @@ model Stream {
 
   isLive Boolean @default(false) @map("is_live")
 
+  isChatEnabled              Boolean @default(true) @map("is_chat_enabled")
+  isChatFollowersOnly        Boolean @default(false) @map("is_chat_followers_only")
+  isChatPremiumFollowersOnly Boolean @default(false) @map("is_chat_premium_followers_only")
+
+  chatMessages ChatMessage[]
+
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String? @unique @map("user_id")
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?   @map("category_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("streams")
+}
+
+model Follow {
+  id String @id @default(uuid())
+
+  follower   User   @relation(name: "followers", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId String @map("follower_id")
+
+  following   User   @relation(name: "following", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String @map("following_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+  @@map("follows")
+}
+
+model ChatMessage {
+  id String @id @default(uuid())
+
+  text String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  stream   Stream @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  streamId String @map("stream_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("chat_messages")
+}
+
+model Category {
+  id String @id @default(uuid())
+
+  title        String
+  slug         String  @unique
+  description  String?
+  thumbnailUrl String? @map("thumbnail_url")
+
+  streams Stream[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("categories")
 }
 
 model SocialLink {

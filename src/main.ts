@@ -11,7 +11,10 @@ import { ms, type StringValue } from './shared/utils/ms.util';
 import { parseBoolean } from './shared/utils/parse-boolean';
 
 async function bootstrap() {
-  const app = await NestFactory.create(CoreModule);
+  const app = await NestFactory.create(CoreModule, {
+    snapshot: true,
+    abortOnError: false,
+  });
 
   const config = app.get(ConfigService);
   const redis = app.get(RedisService);
