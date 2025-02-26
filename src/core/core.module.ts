@@ -24,6 +24,7 @@ import { getLiveKitConfig } from './config/livekit.config';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { FollowModule } from '../modules/follow/follow.module';
+import { ChannelModule } from '../modules/channel/channel.module';
 
 @Module({
   imports: [
@@ -55,12 +56,13 @@ import { FollowModule } from '../modules/follow/follow.module';
     PasswordRecoveryModule,
     TotpModule,
     DeactivateModule,
+    ChannelModule,
     StreamModule,
+    FollowModule,
     CategoryModule,
     ChatModule,
     IngressModule,
     WebhookModule,
-    FollowModule,
   ],
 })
 export class CoreModule {}
