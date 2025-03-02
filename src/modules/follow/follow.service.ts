@@ -5,10 +5,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class FollowService {
-  public constructor(private readonly prisma: PrismaService) {}
+  public constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   public async findMyFollowers(user: User) {
     const followers = await this.prisma.follow.findMany({
@@ -68,12 +72,27 @@ export class FollowService {
       throw new ConflictException('You are already following this channel');
     }
 
-    await this.prisma.follow.create({
+    const follow = await this.prisma.follow.create({
       data: {
         followerId: user.id,
         followingId: channel.id,
       },
+      include: {
+        follower: true,
+        following: {
+          include: {
+            notificationSettings: true,
+          },
+        },
+      },
     });
+
+    if (follow.following.notificationSettings.siteNotifications) {
+      await this.notificationService.createNewFollower(
+        follow.following.id,
+        follow.follower,
+      );
+    }
 
     return true;
   }

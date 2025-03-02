@@ -3,6 +3,8 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { SocialLinkModel } from '../../profile/models/social-link.model';
 import { StreamModel } from '@/src/modules/stream/models/stream.model';
 import { FollowModel } from '@/src/modules/follow/models/follow.model';
+import { NotificationsSettingsModel } from '@/src/modules/notification/inputs/models/notifications-settings.model';
+import { NotificationModel } from '@/src/modules/notification/inputs/models/notification.model';
 
 @ObjectType()
 export class UserModel implements User {
@@ -31,6 +33,11 @@ export class UserModel implements User {
   })
   public bio: string;
 
+  @Field(() => String, {
+    nullable: true,
+  })
+  public telegramId: string;
+
   @Field(() => Boolean)
   public isVerified: boolean;
 
@@ -54,6 +61,12 @@ export class UserModel implements User {
 
   @Field(() => StreamModel)
   public stream: StreamModel;
+
+  @Field(() => [NotificationModel])
+  public notifications: NotificationModel[];
+
+  @Field(() => NotificationsSettingsModel)
+  public notificationsSettings: NotificationsSettingsModel;
 
   @Field(() => [FollowModel])
   public followers: FollowModel[];

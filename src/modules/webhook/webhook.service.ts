@@ -1,12 +1,14 @@
 import { PrismaService } from '@/src/core/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { LivekitService } from '../lib/livekit/livekit.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class WebhookService {
   public constructor(
     private readonly prisma: PrismaService,
     private readonly livekit: LivekitService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   public async recieveWebhookLiveKit(body: string, authorization: string) {
@@ -17,23 +19,59 @@ export class WebhookService {
     );
 
     if (event.event === 'ingress_started') {
-      await this.prisma.stream.update({
+      const stream = await this.prisma.stream.update({
         where: {
           ingressId: event.ingressInfo.ingressId,
         },
         data: {
           isLive: true,
         },
+        include: {
+          user: true,
+        },
       });
+
+      const followers = await this.prisma.follow.findMany({
+        where: {
+          followingId: stream.userId,
+          follower: {
+            isDeactivated: false,
+          },
+        },
+        include: {
+          follower: {
+            include: {
+              notificationSettings: true,
+            },
+          },
+        },
+      });
+
+      for (const follow of followers) {
+        const follower = follow.follower;
+
+        if (follower.notificationSettings.siteNotifications) {
+          await this.notificationService.createStreamStarted(
+            follower.id,
+            stream.user,
+          );
+        }
+      }
     }
 
     if ((event.event = 'ingress_ended')) {
-      await this.prisma.stream.update({
+      const stream = await this.prisma.stream.update({
         where: {
           ingressId: event.ingressInfo.ingressId,
         },
         data: {
           isLive: false,
+        },
+      });
+
+      await this.prisma.chatMessage.deleteMany({
+        where: {
+          streamId: stream.id,
         },
       });
     }
