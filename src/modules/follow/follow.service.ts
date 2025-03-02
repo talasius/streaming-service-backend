@@ -6,12 +6,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { NotificationService } from '../notification/notification.service';
+import { TelegramService } from '../lib/telegram/telegram.service';
 
 @Injectable()
 export class FollowService {
   public constructor(
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
+    private readonly telegramService: TelegramService,
   ) {}
 
   public async findMyFollowers(user: User) {
@@ -90,6 +92,16 @@ export class FollowService {
     if (follow.following.notificationSettings.siteNotifications) {
       await this.notificationService.createNewFollower(
         follow.following.id,
+        follow.follower,
+      );
+    }
+
+    if (
+      follow.following.notificationSettings.telegramNotifications &&
+      follow.following.telegramId
+    ) {
+      await this.telegramService.sendNewFollower(
+        follow.following.telegramId,
         follow.follower,
       );
     }

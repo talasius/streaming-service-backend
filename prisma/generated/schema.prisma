@@ -20,7 +20,7 @@ model User {
   avatar String?
   bio    String?
 
-  telegramId String? @map("telegram_id")
+  telegramId String? @unique @map("telegram_id")
 
   isVerified Boolean @default(false) @map("is_verified")
 
@@ -34,11 +34,11 @@ model User {
   token                Token[]
   socialLinks          SocialLink[]
   stream               Stream?
-  followers            Follow[]               @relation(name: "followers")
-  following            Follow[]               @relation(name: "following")
+  followers            Follow[]              @relation(name: "followers")
+  following            Follow[]              @relation(name: "following")
   chatMessages         ChatMessage[]
   notification         Notification[]
-  notificationSettings NotificationSettings[]
+  notificationSettings NotificationSettings?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -165,8 +165,8 @@ model NotificationSettings {
   siteNotifications     Boolean @default(true) @map("site_notifications")
   telegramNotifications Boolean @default(true) @map("telegram_notifications")
 
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String? @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

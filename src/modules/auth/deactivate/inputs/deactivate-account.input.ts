@@ -24,10 +24,5 @@ export class DeactivateAccountInput {
   public password: string;
 
   @Field(() => String, { nullable: true })
-  @IsString()
-  @IsNotEmpty()
-  @Length(6, 6, {
-    message: 'Pin must be 6 characters',
-  })
   public pin?: string;
 }
