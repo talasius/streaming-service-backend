@@ -25,6 +25,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { FollowModule } from '../modules/follow/follow.module';
 import { ChannelModule } from '../modules/channel/channel.module';
+import { NotificationModule } from '../modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -45,9 +46,11 @@ import { ChannelModule } from '../modules/channel/channel.module';
     }),
     PrismaModule,
     RedisModule,
-    MailModule,
+    WebhookModule,
     StorageModule,
+    IngressModule,
     LivekitModule,
+    MailModule,
     CronModule,
     AccountModule,
     SessionModule,
@@ -61,8 +64,7 @@ import { ChannelModule } from '../modules/channel/channel.module';
     FollowModule,
     CategoryModule,
     ChatModule,
-    IngressModule,
-    WebhookModule,
+    NotificationModule,
   ],
 })
 export class CoreModule {}
