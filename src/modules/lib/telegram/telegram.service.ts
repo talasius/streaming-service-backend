@@ -36,6 +36,7 @@ export class TelegramService extends Telegraf {
 
       if (!authToken) {
         await ctx.reply(MESSAGES.invalidToken);
+        return;
       }
 
       const hasExpired = new Date(authToken.expiresAt) < new Date();
@@ -112,13 +113,10 @@ export class TelegramService extends Telegraf {
     token: string,
     metadata: SessionMetadata,
   ) {
-    await this.telegram.sendMessage(
-      chatId,
-      MESSAGES.resetPassword(token, metadata),
-      {
-        parse_mode: 'HTML',
-      },
-    );
+    await this.telegram.sendMessage(chatId, MESSAGES.resetPassword(metadata), {
+      parse_mode: 'HTML',
+      reply_markup: BUTTONS.resetPassword(token).reply_markup,
+    });
   }
 
   public async sendDeactivationToken(
@@ -138,12 +136,14 @@ export class TelegramService extends Telegraf {
   public async sendAccountDeletion(chatId: string) {
     await this.telegram.sendMessage(chatId, MESSAGES.accountDeleted, {
       parse_mode: 'HTML',
+      reply_markup: BUTTONS.signUp.reply_markup,
     });
   }
 
   public async sendStreamStarted(chatId: string, channel: User) {
     await this.telegram.sendMessage(chatId, MESSAGES.streamStarted(channel), {
       parse_mode: 'HTML',
+      reply_markup: BUTTONS.watchStream(channel).reply_markup,
     });
   }
 

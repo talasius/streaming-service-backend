@@ -20,11 +20,10 @@ export const MESSAGES = {
   followingList: (followingList: string) =>
     `<b>🌟 Channels you follow:</b>\n\n${followingList}`,
   noFollowing: `<b>😢 You are not followig anyone.</b>`,
-  resetPassword: (token: string, metadata: SessionMetadata) =>
+  resetPassword: (metadata: SessionMetadata) =>
     `<b>🔐 Password reset</b>\n\n` +
-    `You requested a password recovery for your account on <b>TeaStream</b>.\n\n` +
-    `Follow the link below to reset your password:\n\n` +
-    `<b><a href="https://teastream.ru/account/recovery/${token}">Reset password</a></b>\n\n` +
+    `You requested a password reset for your account on <b>TeaStream</b>.\n\n` +
+    `Follow the link below to reset your password.\n\n` +
     `📅 <b>Request Date:</b> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\n\n` +
     `🖥️ <b>Request information:</b>\n\n` +
     `🌍 <b>Location: ${metadata.location.country}, ${metadata.location.city}</b>\n` +
@@ -57,14 +56,12 @@ export const MESSAGES = {
     `<b>❗ Your account has been completely deleted.</b>\n\n` +
     `Your account has been completely erased from <b>TeaStream</b>. All your data and information have been permanently deleted.\n\n` +
     `🔒 You will no longer receive any email or Telegram notifications from <b>TeaStream</b>.\n\n` +
-    `If you want to return to <b>TeaStream</b>, you can do it by signing up again:\n` +
-    `<b><a href="https://teastream.ru/accout/create">Sign up to TeaStream</a></b>\n\n` +
+    `If you want to return to <b>TeaStream</b>, you can do it by signing up again\n` +
     `Thank you for your continued <b>TeaStream</b> support! We are always happy to have you here. 🚀\n\n` +
     `Sincerely,\n` +
     `TeaStream Team!`,
   streamStarted: (channel: User) =>
-    `<b>📡 ${channel} has started a broadcast!</b>\n\n` +
-    `Whatch them at: <a href="https://teastream.ru/${channel.username}">Join Stream</a>`,
+    `<b>📡 ${channel} has started a broadcast!</b>`,
   newFollower: (follower: User, followersCount: number) =>
     `🔔 <a href="https://teastream.ru/${follower.username}">${follower.displayName}</a> is now following you!\n\n` +
     `You have ${followersCount} followers now.`,
