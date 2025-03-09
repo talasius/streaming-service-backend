@@ -7,6 +7,8 @@ import { PasswordRecoveryTemplate } from './templates/password-recovery.template
 import type { SessionMetadata } from '@/src/shared/types/session-metadata.types';
 import { DeactivateAccountTemplate } from './templates/deactivate-account.template';
 import { AccountEraseTemplate } from './templates/account-erase.template';
+import { EnableTwoFactorTemplate } from './templates/enable-two-factor.template';
+import { ChannelVerifiedTemplate } from './templates/channel-verified.template';
 
 @Injectable()
 export class MailService {
@@ -47,10 +49,22 @@ export class MailService {
 
   public async sendAccountEraseEmail(email: string) {
     const domain = this.confgService.getOrThrow<string>('ALLOWED_ORIGIN');
-    
     const html = await render(AccountEraseTemplate({ domain }));
 
     return this.sendMail(email, 'Account Erase', html);
+  }
+
+  public async sendEnableTwoFactor(email: string) {
+    const domain = this.confgService.getOrThrow<string>('ALLOWED_ORIGIN');
+    const html = await render(EnableTwoFactorTemplate({ domain }));
+
+    return this.sendMail(email, 'Secure you account', html);
+  }
+
+  public async sendChannelVerified(email: string) {
+    const html = await render(ChannelVerifiedTemplate());
+
+    return this.sendMail(email, 'Channel Verified', html);
   }
 
   private sendMail(email: string, subject: string, html: string) {

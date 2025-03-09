@@ -81,6 +81,9 @@ async function main() {
                   ],
                 },
               },
+              notificationSettings: {
+                create: {},
+              },
             },
           });
           const randomTitles = STREAM_TITLES[randomCategory.slug];

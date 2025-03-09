@@ -12,6 +12,7 @@ import { parseBoolean } from './shared/utils/parse-boolean';
 
 async function bootstrap() {
   const app = await NestFactory.create(CoreModule, {
+    rawBody: true,
     snapshot: true,
     abortOnError: false,
   });

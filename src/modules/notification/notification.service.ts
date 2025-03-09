@@ -1,8 +1,13 @@
-import { NotificationType, TokenType, type User } from '@/prisma/generated';
+import {
+  NotificationType,
+  type SponsorshipPlan,
+  TokenType,
+  type User,
+} from '@/prisma/generated';
 import { PrismaService } from '@/src/core/prisma/prisma.service';
+import { generateToken } from '@/src/shared/utils/generate-token.util';
 import { Injectable } from '@nestjs/common';
 import { ChangeNotificationsSettingsInput } from './inputs/change-notifications-settings.input';
-import { generateToken } from '@/src/shared/utils/generate-token.util';
 
 @Injectable()
 export class NotificationService {
@@ -70,6 +75,53 @@ export class NotificationService {
             id: userId,
           },
         },
+      },
+    });
+
+    return notification;
+  }
+
+  public async createNewSponsorship(
+    userId: string,
+    plan: SponsorshipPlan,
+    sponsor: User,
+  ) {
+    const notification = await this.prisma.notification.create({
+      data: {
+        message: `<b className='font-medium'>You have a new sponsorship!</b>
+      <p>User <a href="https://teastream.ru/${sponsor.username}" className='font-semibold'>${sponsor.displayName}</a> has sponsored you with <strong>${plan.title}</strong> plan!</p>`,
+        type: NotificationType.NEW_SPONSORSHIP,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    return notification;
+  }
+
+  public async createEnableTwoFactor(userId: string) {
+    const notification = await this.prisma.notification.create({
+      data: {
+        message: `<b className='font-medium'>Secure your account</b>
+      <p>Enable two-factor authentication in settings to protect your account.</p>`,
+        type: NotificationType.ENABLE_TWO_FACTOR,
+        userId,
+      },
+    });
+
+    return notification;
+  }
+
+  public async createChannelVerified(userId: string) {
+    const notification = await this.prisma.notification.create({
+      data: {
+        message: `<b className='font-medium'>Congratulations!</b>
+      <p>Your channel has been verified and it has been marked with an official badge from now on.</p>`,
+        type: NotificationType.CHANNEL_VERIFIED,
+        userId,
       },
     });
 

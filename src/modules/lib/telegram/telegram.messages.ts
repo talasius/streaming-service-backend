@@ -1,4 +1,4 @@
-import type { User } from '@/prisma/generated';
+import type { SponsorshipPlan, User } from '@/prisma/generated';
 import type { SessionMetadata } from '@/src/shared/types/session-metadata.types';
 
 export const MESSAGES = {
@@ -65,4 +65,18 @@ export const MESSAGES = {
   newFollower: (follower: User, followersCount: number) =>
     `🔔 <a href="https://teastream.ru/${follower.username}">${follower.displayName}</a> is now following you!\n\n` +
     `You have ${followersCount} followers now.`,
+  newSponsorship: (plan: SponsorshipPlan, sponsor: User) =>
+    `<b>🎉New Sponsorship!</b>\n\n` +
+    `You have a new sponsor! <a href="https://teastream.ru/${sponsor.username}">${sponsor.displayName}</a> has sponsored you with <b>${plan.title}</b> plan!\n\n` +
+    `💰 You will receive ${plan.price} per month from this sponsorship.\n` +
+    `📅 This sponsorship will be active until ${new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleDateString()}.\n\n` +
+    `Thank you for using TeaStream! 🚀`,
+  enableTwoFactor:
+    `🔐Secure  your account with two-factor authentication!\n\n` +
+    `Enable two-factor authentication in your <a href="https://teastream.ru/dashboard/settings">account settings</a>.`,
+  channelVerified:
+    `🎉Congratulations! Your channel has been verified!\n\n` +
+    `We are glad to inform you that your channel has been successfully verified given an official badge.\n\n` +
+    `Verification badge gives you more credibility and visibility on TeaStream.\n\n` +
+    `Thank you for using TeaStream! 🚀`,
 };
