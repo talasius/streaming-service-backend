@@ -1,5 +1,5 @@
-import { UserAgent } from '@/src/shared/decorators/user-agent.decorator';
 import type { GqlContext } from '@/src/shared/types/gql-context.types';
+import { UserAgent } from '@/src/shared/decorators/user-agent.decorator';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthModel } from '../account/models/auth.model';
 import { VerificationInput } from './inputs/verification.input';
