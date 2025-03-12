@@ -70,10 +70,10 @@ export class VerificationService {
       TokenType.EMAIL_VERIFY,
     );
 
-    await this.mailService.sendVerificationToken(
-      user.email,
-      verificationToken.token,
-    );
+    // await this.mailService.sendVerificationToken(
+    //   user.email,
+    //   verificationToken.token,
+    // );
 
     return true;
   }

@@ -58,7 +58,7 @@ export class AccountService {
       },
     });
 
-    // await this.verificationService.sendVerificationToken(user);
+    await this.verificationService.sendVerificationToken(user);
 
     return true;
   }
