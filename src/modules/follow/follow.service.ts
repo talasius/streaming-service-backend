@@ -41,7 +41,11 @@ export class FollowService {
         createdAt: 'desc',
       },
       include: {
-        following: true,
+        following: {
+          include: {
+            stream: true,
+          },
+        },
       },
     });
 
