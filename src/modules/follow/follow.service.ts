@@ -43,7 +43,11 @@ export class FollowService {
       include: {
         following: {
           include: {
-            stream: true,
+            stream: {
+              include: {
+                category: true,
+              },
+            },
           },
         },
       },
