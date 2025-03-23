@@ -41,7 +41,7 @@ export class SessionService {
 
       if (sessionData) {
         const session = JSON.parse(sessionData);
-        
+
         if (session.userId === userId) {
           userSessions.push({
             ...session,
@@ -79,7 +79,7 @@ export class SessionService {
         OR: [{ username: { equals: login } }, { email: { equals: login } }],
       },
     });
-    if (!user) {
+    if (!user || user.isDeactivated) {
       throw new NotFoundException('User not found');
     }
 

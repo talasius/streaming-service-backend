@@ -14,11 +14,13 @@ import { getSessionMetadata } from '@/src/shared/utils/session-metadata.util';
 import { DeactivateAccountInput } from './inputs/deactivate-account.input';
 import { verify } from 'argon2';
 import { TelegramService } from '../../lib/telegram/telegram.service';
+import { RedisService } from '@/src/core/redis/redis.service';
 
 @Injectable()
 export class DeactivateService {
   public constructor(
     private readonly prisma: PrismaService,
+    private readonly redisService: RedisService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
     private readonly telegramService: TelegramService,
@@ -73,7 +75,7 @@ export class DeactivateService {
       throw new BadRequestException('Token has expired');
     }
 
-    await this.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: {
         id: existingToken.userId,
       },
@@ -90,10 +92,12 @@ export class DeactivateService {
       },
     });
 
+    await this.destroySessions(user.id);
+
     return destroySession(req, this.configService);
   }
 
-  public async sendDeactivationToken(
+  private async sendDeactivationToken(
     req: Request,
     user: User,
     userAgent: string,
@@ -125,5 +129,21 @@ export class DeactivateService {
     }
 
     return true;
+  }
+
+  private async destroySessions(userId: string) {
+    const keys = await this.redisService.keys('*');
+
+    for (const key of keys) {
+      const sessionData = await this.redisService.get(key);
+
+      if (sessionData) {
+        const session = JSON.parse(sessionData);
+
+        if (session.userId === userId) {
+          await this.redisService.del(key);
+        }
+      }
+    }
   }
 }
