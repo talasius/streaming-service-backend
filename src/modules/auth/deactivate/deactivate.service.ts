@@ -118,7 +118,7 @@ export class DeactivateService {
     // );
 
     if (
-      deactivationToken.user.notificationSettings.telegramNotifications &&
+      deactivationToken.user.notificationsSettings.telegramNotifications &&
       deactivationToken.user.telegramId
     ) {
       await this.telegramService.sendDeactivationToken(

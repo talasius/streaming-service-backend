@@ -81,8 +81,11 @@ async function main() {
                   ],
                 },
               },
-              notificationSettings: {
-                create: {},
+              notificationsSettings: {
+                create: {
+                  siteNotifications: true,
+                  telegramNotifications: false,
+                },
               },
             },
           });

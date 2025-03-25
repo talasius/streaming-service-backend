@@ -200,7 +200,7 @@ exports.Prisma.NotificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.NotificationSettingsScalarFieldEnum = {
+exports.Prisma.NotificationsSettingsScalarFieldEnum = {
   id: 'id',
   siteNotifications: 'siteNotifications',
   telegramNotifications: 'telegramNotifications',
@@ -296,7 +296,7 @@ exports.Prisma.ModelName = {
   Category: 'Category',
   SocialLink: 'SocialLink',
   Notification: 'Notification',
-  NotificationSettings: 'NotificationSettings',
+  NotificationsSettings: 'NotificationsSettings',
   Transaction: 'Transaction',
   SponsorshipPlan: 'SponsorshipPlan',
   SponsorshipSubscription: 'SponsorshipSubscription',

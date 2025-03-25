@@ -233,7 +233,7 @@ export const STREAM_TITLES = {
 };
 
 export const USERNAMES = [
-  'kaSubo',
+  'talasius',
   'PixelPhantom',
   'GameGuru88',
   'NeonNexus',

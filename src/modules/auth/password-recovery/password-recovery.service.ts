@@ -34,7 +34,7 @@ export class PasswordRecoveryService {
         email,
       },
       include: {
-        notificationSettings: true,
+        notificationsSettings: true,
       },
     });
 
@@ -57,7 +57,7 @@ export class PasswordRecoveryService {
     // );
 
     if (
-      passwordResetToken.user.notificationSettings.telegramNotifications &&
+      passwordResetToken.user.notificationsSettings.telegramNotifications &&
       passwordResetToken.user.telegramId
     ) {
       await this.telegramService.sendPasswordResetToken(
