@@ -169,7 +169,7 @@ type Mutation {
   loginUser(data: LoginInput!): AuthModel!
   logoutUser: Boolean!
   removeProfileAvatar: Boolean!
-  removeSession: Boolean!
+  removeSession(id: String!): Boolean!
   removeSocialLink(id: String!): Boolean!
   removeSponsorshipPlan(planId: String!): Boolean!
   removeStreamThumbnail: Boolean!
