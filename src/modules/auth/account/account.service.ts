@@ -22,6 +22,7 @@ export class AccountService {
     return await this.prisma.user.findUnique({
       where: { id },
       include: {
+        stream: true,
         socialLinks: true,
         notificationsSettings: true,
       },
