@@ -5,6 +5,8 @@ import { StreamModel } from '@/src/modules/stream/models/stream.model';
 import { FollowModel } from '@/src/modules/follow/models/follow.model';
 import { NotificationsSettingsModel } from '@/src/modules/notification/inputs/models/notifications-settings.model';
 import { NotificationModel } from '@/src/modules/notification/inputs/models/notification.model';
+import { PlanModel } from '@/src/modules/sponsorship/plan/models/plan.model';
+import { SubscriptionModel } from '@/src/modules/sponsorship/subscription/models/subscription.model';
 
 @ObjectType()
 export class UserModel implements User {
@@ -73,6 +75,12 @@ export class UserModel implements User {
 
   @Field(() => [FollowModel])
   public following: FollowModel[];
+
+  @Field(() => [PlanModel])
+  public sponsorshipPlans: PlanModel[];
+
+  @Field(() => [SubscriptionModel])
+  public sponsorshipSubscriptions: SubscriptionModel[]
 
   @Field(() => Date)
   public createdAt: Date;

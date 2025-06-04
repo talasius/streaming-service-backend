@@ -68,7 +68,7 @@ export class NotificationService {
     const notification = await this.prisma.notification.create({
       data: {
         message: `<b className='font-medium'>You have a new follower!</b>
-        <p>Join <a href='/${follower.username}' className='font-semibold}'>${follower.displayName}</a> is now following you!</p>`,
+        <p><a href='/${follower.username}' className='font-semibold text-primary hover:underline'>${follower.displayName}</a> is now following you!</p>`,
         type: NotificationType.NEW_FOLLOWER,
         user: {
           connect: {

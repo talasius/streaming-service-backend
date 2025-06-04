@@ -234,9 +234,9 @@ type PlanModel {
 type Query {
   findAllCategories: [CategoryModel!]!
   findAllStreams(filters: FiltersInput!): [StreamModel!]!
-  findByStream(streamId: String!): [ChatMessageModel!]!
   findCategoryBySlug(slug: String!): CategoryModel!
   findChannelByUsername(username: String!): UserModel!
+  findChatMessagesByStream(streamId: String!): [ChatMessageModel!]!
   findCurrentSession: SessionModel!
   findFollowersCountByChannel(channelId: String!): Float!
   findMyFollowers: [FollowModel!]!
@@ -375,6 +375,8 @@ type UserModel {
   notificationsSettings: NotificationsSettingsModel!
   password: String!
   socialLinks: [SocialLinkModel!]!
+  sponsorshipPlans: [PlanModel!]!
+  sponsorshipSubscriptions: [SubscriptionModel!]!
   stream: StreamModel!
   telegramId: String
   totpSecret: String

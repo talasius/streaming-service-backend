@@ -39,7 +39,8 @@ export class StreamService {
         category: true,
       },
       orderBy: {
-        createdAt: 'desc',
+        isLive: 'desc',
+        // createdAt: 'desc',
       },
     });
 
@@ -62,21 +63,43 @@ export class StreamService {
       randomIndexes.add(randomIndex);
     }
 
-    const streams = await this.prisma.stream.findMany({
+    const liveStreams = await this.prisma.stream.findMany({
       where: {
         user: {
           isDeactivated: false,
         },
+        isLive: true,
       },
       include: {
         user: true,
         category: true,
       },
-      take: total,
-      skip: 0,
     });
 
-    return Array.from(randomIndexes).map((index) => streams[index]);
+    if (liveStreams.length < 4) {
+      const streams = await this.prisma.stream.findMany({
+        where: {
+          user: {
+            isDeactivated: false,
+          },
+        },
+        include: {
+          user: true,
+          category: true,
+        },
+        take: total,
+        skip: 0,
+      });
+
+      liveStreams.push(...streams);
+    }
+
+    if (liveStreams.length > 4) {
+      liveStreams.splice(4);
+    }
+
+    return liveStreams;
+    // return Array.from(randomIndexes).map((index) => liveStreams[index]);
   }
 
   public async changeStreamInfo(user: User, input: ChangeStreamInfoInput) {
@@ -244,6 +267,14 @@ export class StreamService {
         {
           user: {
             username: {
+              contains: searchTerm,
+              mode: 'insensitive',
+            },
+          },
+        },
+        {
+          category: {
+            title: {
               contains: searchTerm,
               mode: 'insensitive',
             },
